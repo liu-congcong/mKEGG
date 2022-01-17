@@ -11,7 +11,7 @@ KEGG for metagenome.
 
 ## Installation
 
-### Download and install MKEGG
+### Download and install mKEGG
 
 ```shell
 # You may need to install pip3 before. #
@@ -50,6 +50,8 @@ echo "export K_HMM=/path/k.hmm" >> ~/.bashrc
 wget -O ko00001.json "https://www.kegg.jp/kegg-bin/download_htext?htext=ko00001&format=json"
 echo "export KO_JSON=/path/ko00001.json" >> ~/.bashrc
 ```
+
+**Make sure that samtools (Samtools), hmmsearch (Hmmer) and prodigal (Prodigal) has been added to the environment variables. **
 
 ### Run mKEGG
 
