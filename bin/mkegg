@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+import os
+import sys
+from argparse import ArgumentParser, RawTextHelpFormatter
+from shutil import which
+
+from mkegg.mkegg_mapping import mkegg_mapping
+from mkegg.mkegg_abundance import mkegg_abundance
+from mkegg.mkegg_pathway import mkegg_pathway
+
+
+def __init__(parameters):
+    parser = ArgumentParser(
+        formatter_class = RawTextHelpFormatter,
+        description = 'KEGG analysis for metagenome.',
+        epilog = 'Liucongcong congcong_liu@icloud.com.'
+    )
+    subparsers = parser.add_subparsers(
+        title = 'program', dest = 'program', required = True, help = 'Run %(prog)s mapping|abundance|pathway --help for help.'
+    )
+
+    mapping_parser = subparsers.add_parser(
+        'mapping', formatter_class = RawTextHelpFormatter, help = 'Map hmms to assembliy to generate the kmap file.\nUsage: %(prog)s mapping -assembly ASSEMBLY -output KMAP -threads 30.'
+    )
+    mapping_parser.add_argument(
+        '-prodigal', '--prodigal', type = str, default = which('prodigal'), required = False, metavar = 'file',
+        help = 'The path of "prodigal".\nDefault: /usr/bin/env prodigal.'
+    )
+    mapping_parser.add_argument(
+        '-hmmsearch', '--hmmsearch', type = str, default = which('hmmsearch'), required = False, metavar = 'file',
+        help = 'The path of "hmmsearch".\nDefault: /usr/bin/env hmmsearch.'
+    )
+    mapping_parser.add_argument(
+        '-ko_list', '--ko_list', type = str, default = os.getenv('KO_LIST'), required = False, metavar = 'file',
+        help = 'The path of "ko_list" file.\nwget https://www.genome.jp/ftp/db/kofam/ko_list.gz\ngunzip ko_list.gz\nDefault: /usr/bin/env KO_LIST.'
+    )
+    mapping_parser.add_argument(
+        '-k_hmm', '--k_hmm', type = str, default = os.getenv('K_HMM'), required = False, metavar = 'file',
+        help = 'The path of single combined hmm file.\nwget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz\ntar xvf profiles.tar.gz\ncd profiles\ncat K*.hmm > ../k.hmm\nDefault: /usr/bin/env K_HMM.'
+    )
+    mapping_parser.add_argument(
+        '-assembly', '--assembly', type = str, required = True, metavar = 'file',
+        help = 'The path of fasta format assembly file.'
+    )
+    mapping_parser.add_argument(
+        '-output', '--output', type = str, required = True, metavar = 'file'
+    )
+    mapping_parser.add_argument(
+        '-threads', '--threads', type = int, default = 1, required = False, metavar = 'threads'
+    )
+
+    abundance_parser = subparsers.add_parser('abundance', formatter_class = RawTextHelpFormatter, help = 'Calculate abundance in a kmap file on the basis of sorted and indexed bam file.\nUsage: %(prog)s abundance -bam SORTED.BAM -kmap KMAP -output AKMAP -threads 30.')
+    abundance_parser.add_argument(
+        '-samtools', '--samtools', type = str, default = which('samtools'), required = False, metavar = 'file',
+        help = 'The path of "samtools".\nDefault: /usr/bin/env samtools.'
+    )
+    abundance_parser.add_argument(
+        '-bam', '--bam', type = str, required = True, metavar = 'file',
+        help = 'The path of sorted and indexed bam file.'
+    )
+    abundance_parser.add_argument(
+        '-kmap', '--kmap', type = str, required = True, metavar = 'file',
+        help = 'The path of kmap file.'
+    )
+    abundance_parser.add_argument(
+        '-output', '--output', type = str, required = True, metavar = 'file'
+    )
+    abundance_parser.add_argument(
+        '-threads', '--threads', type = int, default = 1, required = False, metavar = 'threads'
+    )
+
+    pathway_parser = subparsers.add_parser('pathway', formatter_class = RawTextHelpFormatter, help = 'Construct the KEGG pathways of clusters.\nUsage: %(prog)s pathway -clusters *CLUSTER -kmap KMAP -output PATHWAY.')
+    pathway_parser.add_argument(
+        '-ko_json', '--ko_json', type = str, default = os.getenv('KO_JSON'), required = False, metavar = 'file',
+        help = 'The path of "ko*.json" file.\nwget -O ko00001.json "https://www.kegg.jp/kegg-bin/download_htext?htext=ko00001&format=json"\nDefault: /usr/bin/env KO_JSON.'
+    )
+    pathway_parser.add_argument(
+        '-clusters', '--clusters', type = str, nargs = '+', required = True, metavar = 'file',
+        help = 'The fasta format cluster files.'
+    )
+    pathway_parser.add_argument(
+        '-kmap', '--kmap', type = str, required = True, metavar = 'file',
+        help = 'The kmap file with abundance information.'
+    )
+    pathway_parser.add_argument(
+        '-output', '--output', type = str, required = True, metavar = 'file'
+    )
+    pathway_parser.add_argument(
+        '-output_list', '--output_list', required = False, action = 'store_true'
+    )
+    return parser.parse_args(parameters)
+
+
+
+if __name__ == '__main__':
+    parameters = __init__(sys.argv[1 : ])
+    if parameters.program == 'mapping':
+        assert parameters.prodigal and os.access(parameters.prodigal, os.R_OK), 'You need to specify the path of "prodigal".'
+        assert parameters.hmmsearch and os.access(parameters.prodigal, os.R_OK), 'You need to specify the path of "hmmsearch".'
+        assert parameters.ko_list and os.access(parameters.ko_list, os.R_OK), 'You need to specify the path of "ko_list".'
+        assert parameters.k_hmm and os.access(parameters.k_hmm, os.R_OK), 'You need to specify the path of "k.hmm".'
+        assert os.access(parameters.assembly, os.R_OK), 'The {0} file is not readable.'.format(parameters.assembly)
+        mkegg_mapping(parameters)
+    elif parameters.program == 'abundance':
+        assert parameters.samtools, 'You need to specify the path of "samtools".'
+        assert os.access(parameters.kmap, os.R_OK), 'The {0} file is not readable.'.format(parameters.kmap)
+        assert os.access(parameters.bam, os.R_OK), 'The {0} file is not readable.'.format(parameters.bam)
+        mkegg_abundance(parameters)
+    else:
+        assert parameters.ko_json and os.access(parameters.ko_json, os.R_OK), 'You need to specify the path of "ko*.json".'
+        assert os.access(parameters.kmap, os.R_OK), 'The {0} file is not readable.'.format(parameters.kmap)
+        for cluster_file in parameters.clusters:
+            assert os.access(cluster_file, os.R_OK), 'The {0} file is not readable.'.format(cluster_file)
+        mkegg_pathway(parameters)
