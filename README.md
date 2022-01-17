@@ -51,7 +51,7 @@ wget -O ko00001.json "https://www.kegg.jp/kegg-bin/download_htext?htext=ko00001&
 echo "export KO_JSON=/path/ko00001.json" >> ~/.bashrc
 ```
 
-**Make sure that samtools (Samtools), hmmsearch (Hmmer) and prodigal (Prodigal) has been added to the environment variables.**
+**Make sure that samtools (Samtools), hmmsearch (Hmmer) and prodigal (Prodigal) have been added to the environment variables.**
 
 ### Run mKEGG
 
