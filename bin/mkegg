@@ -96,7 +96,7 @@ if __name__ == '__main__':
     parameters = __init__(sys.argv[1 : ])
     if parameters.program == 'mapping':
         assert parameters.prodigal and os.access(parameters.prodigal, os.R_OK), 'You need to specify the path of "prodigal".'
-        assert parameters.hmmsearch and os.access(parameters.prodigal, os.R_OK), 'You need to specify the path of "hmmsearch".'
+        assert parameters.hmmsearch and os.access(parameters.hmmsearch, os.R_OK), 'You need to specify the path of "hmmsearch".'
         assert parameters.ko_list and os.access(parameters.ko_list, os.R_OK), 'You need to specify the path of "ko_list".'
         assert parameters.k_hmm and os.access(parameters.k_hmm, os.R_OK), 'You need to specify the path of "k.hmm".'
         assert os.access(parameters.assembly, os.R_OK), 'The {0} file is not readable.'.format(parameters.assembly)
