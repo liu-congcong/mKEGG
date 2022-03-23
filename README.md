@@ -34,21 +34,20 @@ pip3 install https://github.com/liu-congcong/mKEGG/releases/download/v1.0.0/mkeg
 ```shell
 wget https://www.genome.jp/ftp/db/kofam/ko_list.gz
 gunzip ko_list.gz
-echo "export KO_LIST=/path/ko_list" >> ~/.bashrc
+echo "export KO_LIST=`pwd`/ko_list" >> ~/.bashrc
 ```
 
 ```shell
 wget https://www.genome.jp/ftp/db/kofam/profiles.tar.gz
 tar xvf profiles.tar.gz
-cd profiles
-cat K*.hmm > ../k.hmm
+cat profiles/K*.hmm > k.hmm
 rm -rf profiles
-echo "export K_HMM=/path/k.hmm" >> ~/.bashrc
+echo "export K_HMM=`pwd`/k.hmm" >> ~/.bashrc
 ```
 
 ```shell
 wget -O ko00001.json "https://www.kegg.jp/kegg-bin/download_htext?htext=ko00001&format=json"
-echo "export KO_JSON=/path/ko00001.json" >> ~/.bashrc
+echo "export KO_JSON=`pwd`/ko00001.json" >> ~/.bashrc
 ```
 
 **Make sure that samtools (Samtools), hmmsearch (Hmmer) and prodigal (Prodigal) have been added to the environment variables.**
