@@ -32,21 +32,20 @@ def read_ko_json(input_file, k_number2k_index):
     open_file.close()
     for node_a in root_node.get('children', list()):
         level_a = node_a['name'].split(maxsplit = 1)[1]
-        if level_a in ('Metabolism', 'Genetic Information Processing', 'Environmental Information Processing', 'Cellular Processes', 'Organismal Systems', 'Human Diseases'):
-            levela2levelb2levelc2k_indices[level_a] = dict()
-            levelb2levelc2k_indices = levela2levelb2levelc2k_indices[level_a]
-            for node_b in node_a.get('children', list()):
-                level_b = node_b['name'].split(maxsplit = 1)[1]
-                levelb2levelc2k_indices[level_b] = dict()
-                levelc2k_indices = levelb2levelc2k_indices[level_b]
-                for node_c in node_b.get('children', list()):
-                    level_c = node_c['name'].split(maxsplit = 1)[1]
-                    levelc2k_indices[level_c] = list()
-                    k_indices = levelc2k_indices[level_c]
-                    for node_d in node_c.get('children', list()):
-                        k_number = node_d['name'].split(maxsplit = 1)[0]
-                        if k_number in k_number2k_index:
-                            k_indices.append(k_number2k_index[k_number])
+        levela2levelb2levelc2k_indices[level_a] = dict()
+        levelb2levelc2k_indices = levela2levelb2levelc2k_indices[level_a]
+        for node_b in node_a.get('children', list()):
+            level_b = node_b['name'].split(maxsplit = 1)[1]
+            levelb2levelc2k_indices[level_b] = dict()
+            levelc2k_indices = levelb2levelc2k_indices[level_b]
+            for node_c in node_b.get('children', list()):
+                level_c = node_c['name'].split(maxsplit = 1)[1]
+                levelc2k_indices[level_c] = list()
+                k_indices = levelc2k_indices[level_c]
+                for node_d in node_c.get('children', list()):
+                    k_number = node_d['name'].split(maxsplit = 1)[0]
+                    if k_number in k_number2k_index:
+                        k_indices.append(k_number2k_index[k_number])
     return levela2levelb2levelc2k_indices
 
 
