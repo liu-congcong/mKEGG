@@ -68,10 +68,10 @@ def mkegg_mapping(parameters):
     for process in processes:
         process.join()
     os.remove(model_file)
-    sequence_id2position = combine_files(protein_files, parameters.output + '.proteins.fasta')
+    sequence_id2position = combine_files(protein_files, parameters.output + '.proteins')
 
     hit_files = list()
-    for fasta_file in split_fasta(parameters.output + '.proteins.fasta', parameters.threads):
+    for fasta_file in split_fasta(parameters.output + '.proteins', parameters.threads):
         hit_files.append(make_file())
         # Map proteins to KEGG hmms using hmmsearch. #
         processes.append(
