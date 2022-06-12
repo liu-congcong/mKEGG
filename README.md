@@ -22,7 +22,7 @@ python3 get-pip.py
 pip3 install --upgrade setuptools wheel
 
 # Install mKEGG #
-pip3 install https://github.com/liu-congcong/mKEGG/releases/download/v1.0.0/mkegg.1.0.0.tar.gz
+pip3 install https://github.com/liu-congcong/mKEGG/releases/download/v1.0.0/mkegg-1.0.0-py3-none-any.whl
 ```
 
 ## Usage
